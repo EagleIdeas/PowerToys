@@ -65,8 +65,15 @@ public:
     HRESULT Shutdown();
 
 protected:
+    struct SyncedSettings
+    {
+        bool webcamDisabled = false;
+        std::wstring newCameraName;
+        ComPtr<IStream> overlayImage;
+    };
+
     HRESULT UpdateSourceCamera(std::wstring_view newCameraName);
-    bool SyncCurrentSettings();
+    SyncedSettings SyncCurrentSettings();
 
     HRESULT _CheckShutdownRequiresLock();
     HRESULT _SetStreamAttributes(IMFAttributes* pAttributeStore);
@@ -85,6 +92,8 @@ protected:
     DeviceList _cameraList;
     ComPtr<IMFSourceReader> _sourceCamera;
     ComPtr<IMFSample> _overlayImage;
+
+    ComPtr<IMFSample> _blackImage;
 
     std::optional<SerializedSharedMemory> _settingsUpdateChannel;
     std::optional<std::wstring> _currentSourceCameraName;

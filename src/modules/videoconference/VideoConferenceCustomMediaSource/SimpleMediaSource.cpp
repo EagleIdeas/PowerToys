@@ -19,7 +19,6 @@ SimpleMediaSource::RuntimeClassInitialize()
         ComPtr<IMFStreamDescriptor> streamDescriptor(_stream.Get()->_spStreamDesc.Get());
         RETURN_IF_FAILED_WITH_LOGGING(MFCreatePresentationDescriptor(1, streamDescriptor.GetAddressOf(), &_spPresentationDescriptor));
     }
-
     _wasStreamPreviouslySelected = false;
     _sourceState = SourceState::Stopped;
 
@@ -399,20 +398,30 @@ SimpleMediaSource::SetD3DManager(
 
     return E_NOTIMPL;
 }
+struct __declspec(uuid("a1f58958-a5aa-412f-af20-1b7f1242dba0")) IMFDeviceController;
 
 // IMFGetService methods
 _Use_decl_annotations_
     IFACEMETHODIMP
     SimpleMediaSource::GetService(
         _In_ REFGUID,
-        _In_ REFIID,
+        _In_ REFIID iid,
         _Out_ LPVOID* ppvObject)
 {
     LogToFile(__FUNCTION__);
 
     HRESULT hr = S_OK;
-
     auto lock = _critSec.Lock();
+
+    const bool wantsIMFDeviceController = IsEqualIID(iid, __uuidof(IMFDeviceController));
+    auto stream = _stream.Get();
+    const bool goingToRestart = wantsIMFDeviceController && _wasStreamPreviouslySelected && stream && stream->_isSelected && _sourceState == SourceState::Started;
+    if (goingToRestart)
+    {
+        // GetService w /IMFDeviceController is called when we're already started -> stopping to prepare for restart
+        stream->SetStreamState(MF_STREAM_STATE_STOPPED);
+        return E_POINTER;
+    }
 
     RETURN_IF_FAILED_WITH_LOGGING(_CheckShutdownRequiresLock());
 

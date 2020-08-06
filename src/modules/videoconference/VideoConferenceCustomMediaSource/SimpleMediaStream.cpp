@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <thread>
 
 #include "SimpleMediaSource.h"
 #include "SimpleMediaStream.h"
@@ -15,6 +16,20 @@ HRESULT CopyAttribute(IMFAttributes* pSrc, IMFAttributes* pDest, const GUID& key
 
 const static std::wstring_view MODULE_NAME = L"Video Conference";
 const static std::wstring_view VIRTUAL_CAMERA_NAME = L"PowerToys VideoConference";
+
+namespace
+{
+    constexpr std::array<unsigned char, 3> blackColor = { 0, 0, 0 };
+    // clang-format off
+    unsigned char bmpPixelData[58] = {
+	      0x42, 0x4D, 0x3A, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x36, 0x00,
+	      0x00, 0x00, 0x28, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00,
+	      0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x00,
+	      0x00, 0x00, 0xC4, 0x0E, 0x00, 0x00, 0xC4, 0x0E, 0x00, 0x00, 0x00, 0x00,
+	      0x00, 0x00, 0x00, 0x00, 0x00, 0x00, blackColor[0], blackColor[1], blackColor[2], 0x00
+    };
+    // clang-format on
+}
 
 void DeviceList::Clear()
 {
@@ -209,7 +224,6 @@ ComPtr<IMFMediaType> SelectBestMediaType(IMFSourceReader* reader)
         }
     }
 
-    
     if (is16by9RatioAvailable)
     {
         // Remove all types with non 16 by 9 ratio
@@ -229,7 +243,7 @@ ComPtr<IMFMediaType> SelectBestMediaType(IMFSourceReader* reader)
     {
         UINT32 width = 0;
         UINT32 height = 0;
-        
+
         MFGetAttributeSize(type.Get(), MF_MT_FRAME_SIZE, &width, &height);
         const UINT64 curResolutionMult = static_cast<UINT64>(width) * height;
         if (curResolutionMult >= maxResolution)
@@ -269,11 +283,18 @@ SimpleMediaStream::RuntimeClassInitialize(
     }
     RETURN_IF_FAILED_WITH_LOGGING(pSource->QueryInterface(IID_PPV_ARGS(&_parent)));
 
-    SyncCurrentSettings();
-    // We couldn't connect to the PT, so choose a default webcam
-    if (!_settingsUpdateChannel)
+    const auto newSettings = SyncCurrentSettings();
+    UpdateSourceCamera(newSettings.newCameraName);
+    ComPtr<IStream> blackBMPImage = SHCreateMemStream(bmpPixelData, sizeof(bmpPixelData));
+    if (!blackBMPImage || !_spMediaType)
     {
-        UpdateSourceCamera(L"");
+        return E_FAIL;
+    }
+
+    if (_spMediaType)
+    {
+        _overlayImage = LoadImageAsSample(newSettings.overlayImage, _spMediaType.Get());
+        _blackImage = LoadImageAsSample(blackBMPImage, _spMediaType.Get());
     }
 
     return S_OK;
@@ -412,34 +433,45 @@ IFACEMETHODIMP
 SimpleMediaStream::RequestSample(
     _In_ IUnknown* pToken)
 {
-    LogToFile(__FUNCTION__);
-
     auto lock = _critSec.Lock();
     HRESULT hr{};
     RETURN_IF_FAILED_WITH_LOGGING(_CheckShutdownRequiresLock());
 
-    const bool disableWebcam = SyncCurrentSettings();
+    const auto syncedSettings = SyncCurrentSettings();
+
+    // Source camera is updated, we must shutdown ourselves, since we can't modify presentation descriptor while running
+    if (!syncedSettings.newCameraName.empty())
+    {
+        std::thread{ [this] {
+            auto lock = _critSec.Lock();
+            SetStreamState(MF_STREAM_STATE_STOPPED);
+        } }.detach();
+    }
+    else if (syncedSettings.overlayImage)
+    {
+        _overlayImage = LoadImageAsSample(syncedSettings.overlayImage, _spMediaType.Get());
+    }
 
     // Request the first video frame.
 
     ComPtr<IMFSample> sample;
     DWORD streamFlags = 0;
 
-    RETURN_IF_FAILED_WITH_LOGGING(_sourceCamera->ReadSample(
+    const auto readSampleResult = _sourceCamera->ReadSample(
         (DWORD)MF_SOURCE_READER_FIRST_VIDEO_STREAM,
         0,
         nullptr,
         &streamFlags,
         nullptr,
-        &sample));
+        &sample);
 
-    IMFSample* outputSample = disableWebcam ? _overlayImage.Get() : sample.Get();
+    IMFSample* outputSample = syncedSettings.webcamDisabled ? _overlayImage.Get() : sample.Get();
     const bool noSampleAvailable = !outputSample;
 
+    // use black image instead, it should be always available
     if (noSampleAvailable)
     {
-        // Create an empty sample
-        RETURN_IF_FAILED_WITH_LOGGING(MFCreateSample(&outputSample));
+        outputSample = _blackImage.Get();
     }
     RETURN_IF_FAILED_WITH_LOGGING(outputSample->SetSampleTime(MFGetSystemTime()));
     RETURN_IF_FAILED_WITH_LOGGING(outputSample->SetSampleDuration(333333));
@@ -448,12 +480,10 @@ SimpleMediaStream::RequestSample(
         RETURN_IF_FAILED_WITH_LOGGING(outputSample->SetUnknown(MFSampleExtension_Token, pToken));
     }
 
-    if (noSampleAvailable)
+    if (FAILED(readSampleResult) && syncedSettings.newCameraName.empty())
     {
-        RETURN_IF_FAILED_WITH_LOGGING(_spEventQueue->QueueEventParamUnk(MEStreamTick,
-                                                                        GUID_NULL,
-                                                                        S_OK,
-                                                                        nullptr));
+        // Try to reinit webcamera, since it could've been unavailable due to concurrent access from 3rd-party apps
+        UpdateSourceCamera(_currentSourceCameraName ? *_currentSourceCameraName : L"");
     }
 
     RETURN_IF_FAILED_WITH_LOGGING(_spEventQueue->QueueEventParamUnk(MEMediaSample,
@@ -634,77 +664,55 @@ HRESULT SimpleMediaStream::UpdateSourceCamera(std::wstring_view newCameraName)
     return hr;
 }
 
-bool SimpleMediaStream::SyncCurrentSettings()
+SimpleMediaStream::SyncedSettings SimpleMediaStream::SyncCurrentSettings()
 {
-    bool webcamDisabled = false;
+    SyncedSettings result;
     if (!_settingsUpdateChannel.has_value())
     {
         _settingsUpdateChannel = SerializedSharedMemory::open(CameraSettingsUpdateChannel::endpoint(), sizeof(CameraSettingsUpdateChannel), false);
     }
     if (!_settingsUpdateChannel)
     {
-        LogToFile("PowerToys not running");
-        return webcamDisabled;
+        return result;
     }
-
-    _settingsUpdateChannel->access([this, &webcamDisabled](auto settingsMemory) {
+    _settingsUpdateChannel->access([this, &result](auto settingsMemory) {
         auto settings = reinterpret_cast<CameraSettingsUpdateChannel*>(settingsMemory.data());
         bool cameraNameUpdated = false;
-        std::wstring_view newCameraName;
-        webcamDisabled = settings->useOverlayImage;
+        result.webcamDisabled = settings->useOverlayImage;
         if (settings->sourceCameraName.has_value())
         {
             std::wstring_view newCameraNameView{ settings->sourceCameraName->data() };
             if (!_currentSourceCameraName.has_value() || *_currentSourceCameraName != newCameraNameView)
             {
                 cameraNameUpdated = true;
-                newCameraName = newCameraNameView;
+                result.newCameraName = newCameraNameView;
             }
-        }
-        bool cameraUpdated = false;
-        if (cameraNameUpdated)
-        {
-            cameraUpdated = SUCCEEDED(UpdateSourceCamera(std::move(newCameraName)));
         }
 
         if (!settings->overlayImageSize.has_value())
         {
-            LogToFile("!settings->overlayImageSize.has_value()");
             return;
         }
 
-        if (settings->newOverlayImagePosted || !_overlayImage || cameraUpdated)
+        if (settings->newOverlayImagePosted || !_overlayImage)
         {
-            LogToFile("settings->newOverlayImagePosted || !_overlayImage || cameraUpdated");
             auto imageChannel =
                 SerializedSharedMemory::open(CameraOverlayImageChannel::endpoint(), *settings->overlayImageSize, true);
             if (!imageChannel)
             {
-                LogToFile("!imageChannel");
                 return;
             }
-            imageChannel->access([this, settings](auto imageMemory) {
-                LogToFile("imageChannel->access([this, settings](auto imageMemory)");
-                ComPtr<IStream> imageStream = SHCreateMemStream(imageMemory.data(), static_cast<UINT>(imageMemory.size()));
-                if (!imageStream)
+            imageChannel->access([this, settings, &result](auto imageMemory) {
+                result.overlayImage = SHCreateMemStream(imageMemory.data(), static_cast<UINT>(imageMemory.size()));
+                if (!result.overlayImage)
                 {
-                    LogToFile("!imageStream");
                     return;
                 }
-                if (auto imageSample = LoadImageAsSample(imageStream, _spMediaType.Get()))
-                {
-                    LogToFile("Successfully loaded image");
-                    _overlayImage = imageSample;
-                    settings->newOverlayImagePosted = false;
-                }
-                else
-                {
-                    LogToFile("Failed to load image");
-                }
+                settings->newOverlayImagePosted = false;
             });
         }
     });
-    return webcamDisabled;
+    return result;
 }
 
 HRESULT

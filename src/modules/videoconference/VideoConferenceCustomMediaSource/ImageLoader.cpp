@@ -22,7 +22,7 @@
     hr = val;                                                                            \
     if (FAILED(hr))                                                                      \
     {                                                                                    \
-        LogToFile(std::string(#val) + " Failed with error code: " + std::to_string(hr)); \
+        LogToFile(std::string(#val) + " Failed: " + std::system_category().message(hr)); \
         return nullptr;                                                                  \
     }
 

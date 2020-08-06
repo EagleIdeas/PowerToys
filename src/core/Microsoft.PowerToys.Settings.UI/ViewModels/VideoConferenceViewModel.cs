@@ -38,6 +38,8 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
             Settings = SettingsUtils.GetOrCreateSettings<VideoConferenceSettings>(ModuleName);
 
             CameraNames = Task.Run(() => GetAllCameras()).Result.Select(di => di.Name).ToList();
+            // Uncomment to have an additional webcam to debug with! (don't forget to install it)
+            //CameraNames.Add("DroidCam Source 3");
             if (Settings.Properties.SelectedCamera.Value == string.Empty && CameraNames.Count != 0)
             {
                 _selectedCameraIndex = 0;

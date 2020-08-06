@@ -315,7 +315,7 @@ void VideoConferenceModule::init_settings()
         }
         if (const auto val = settings.get_bool_value(L"hide_overlay_when_unmuted"))
         {
-            Overlay::setHideOverlayWhenUnmuted (val.value());
+            Overlay::setHideOverlayWhenUnmuted(val.value());
         }
     }
     catch (std::exception&)
@@ -398,7 +398,7 @@ void VideoConferenceModule::sendSourceCameraNameUpdate()
         return;
     }
     _settingsUpdateChannel->access([](auto memory) {
-        auto updatesChannel = new (memory.data()) CameraSettingsUpdateChannel{};
+        auto updatesChannel = reinterpret_cast<CameraSettingsUpdateChannel*>(memory.data());
         updatesChannel->sourceCameraName.emplace();
         std::copy(begin(selectedCamera), end(selectedCamera), begin(*updatesChannel->sourceCameraName));
     });

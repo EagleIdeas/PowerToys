@@ -2,6 +2,7 @@
 
 #include <string>
 #include <guiddef.h>
+#include <system_error>
 
 void LogToFile(std::string what);
 std::string toMediaTypeString(GUID subtype);
@@ -10,6 +11,6 @@ std::string toMediaTypeString(GUID subtype);
     hr = (val);                                                                          \
     if (FAILED(hr))                                                                      \
     {                                                                                    \
-        LogToFile(std::string(#val) + " Failed with error code: " + std::to_string(hr)); \
+        LogToFile(std::string(#val) + " Failed: " + std::system_category().message(hr)); \
         return hr;                                                                       \
     }
