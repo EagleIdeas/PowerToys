@@ -634,10 +634,18 @@
     <DirectoryRef Id="VideoConferenceInstallFolder" FileSource="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\">
       <Component Id="Module_VideoConference" Guid="5996527a-40fc-432e-b3ac-abc0b4bd3887" Win64="yes">
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\VideoConferenceModule.dll" KeyPath="yes" /> 
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\CamOnMicOn.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\CamOffMicOn.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\CamOnMicOff.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\CamOffMicOff.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-NotInUse Dark.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-NotInUse Light.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-Off Dark.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-Off Light.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-On Dark.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-On Light.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-NotInUse Dark.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-NotInUse Light.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-Off Light.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-Off Dark.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-On Dark.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-On Light.png" />
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\black.bmp" />
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\VideoConferenceVirtualDriver\videoconferencevirtualdriver.cat" />
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\VideoConferenceVirtualDriver\VideoConferenceCustomMediaSource.dll" />

@@ -23,14 +23,14 @@ unsigned __int64 Overlay::lastTimeCamOrMicMuteStateChanged;
 
 const int REFRESH_RATE = 100;
 const int OVERLAY_SHOW_TIME = 500;
-const int BORDER_OFFSET = 16;
+const int BORDER_OFFSET = 12;
 
 Overlay::Overlay()
 {
-    camOnMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/CamOnMicOn.png");
-    camOffMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/CamOffMicOn.png");
-    camOnMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/CamOnMicOff.png");
-    camOffMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/CamOffMicOff.png");
+    camOnMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/On-On Dark.png");
+    camOffMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/On-Off Dark.png");
+    camOnMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Off-On Dark.png");
+    camOffMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Off-Off Dark.png");
 }
 
 LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -44,7 +44,7 @@ LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARA
         int x = GET_X_LPARAM(lparam);
         int y = GET_Y_LPARAM(lparam);
 
-        if (x < 180)
+        if (x < 322 / 2)
         {
             VideoConferenceModule::reverseMicrophoneMute();
         }

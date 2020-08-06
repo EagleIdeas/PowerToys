@@ -80,11 +80,8 @@
       <AdditionalDependencies>mfplat.lib;mf.lib;mfreadwrite.lib;mfuuid.lib;shlwapi.lib;gdiplus.lib;dwmapi.lib;uxtheme.lib;shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y  "$(ProjectDir)CamOffMicOff.png" "$(OutDir)"
-xcopy /y  "$(ProjectDir)CamOffMicOn.png" "$(OutDir)"
-xcopy /y  "$(ProjectDir)CamOnMicOff.png" "$(OutDir)"
-xcopy /y  "$(ProjectDir)CamOnMicOn.png" "$(OutDir)"
-xcopy /y  "$(ProjectDir)black.bmp" "$(OutDir)"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -106,11 +103,8 @@ xcopy /y  "$(ProjectDir)black.bmp" "$(OutDir)"</Command>
       <AdditionalDependencies>mfplat.lib;mf.lib;mfreadwrite.lib;mfuuid.lib;shlwapi.lib;gdiplus.lib;dwmapi.lib;uxtheme.lib;shcore.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y  "$(ProjectDir)CamOffMicOff.png" "$(OutDir)"
-xcopy /y  "$(ProjectDir)CamOffMicOn.png" "$(OutDir)"
-xcopy /y  "$(ProjectDir)CamOnMicOff.png" "$(OutDir)"
-xcopy /y  "$(ProjectDir)CamOnMicOn.png" "$(OutDir)"
-xcopy /y  "$(ProjectDir)black.bmp" "$(OutDir)"</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -139,7 +133,61 @@ xcopy /y  "$(ProjectDir)black.bmp" "$(OutDir)"</Command>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Off-NotInUse Dark.svg" />
+    <None Include="Off-NotInUse Light.svg" />
+    <None Include="Off-Off Dark.svg" />
+    <None Include="Off-Off Light.svg" />
+    <None Include="Off-On Dark.svg" />
+    <None Include="Off-On Light.svg" />
+    <None Include="On-NotInUse Dark.svg" />
+    <None Include="On-NotInUse Light.svg" />
+    <None Include="On-Off Dark.svg" />
+    <None Include="On-Off Light.svg" />
+    <None Include="On-On Dark.svg" />
+    <None Include="On-On Light.svg" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="black.bmp">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="Off-NotInUse Dark.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="Off-NotInUse Light.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="Off-Off Dark.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="Off-Off Light.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="Off-On Dark.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="Off-On Light.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="On-NotInUse Dark.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="On-NotInUse Light.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="On-Off Dark.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="On-Off Light.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="On-On Dark.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+    <Image Include="On-On Light.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
