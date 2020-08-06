@@ -494,8 +494,8 @@ Disabling module or closing PowerToys will unmute microphone and camera</value>
   <data name="VideoConference_OverlayPosition.Header" xml:space="preserve">
     <value>Overlay postion</value>
   </data>
-  <data name="VideoConference_OverlayPosition_Center.Content" xml:space="preserve">
-    <value>Center</value>
+  <data name="VideoConference_OverlayPosition_TopCenter.Content" xml:space="preserve">
+    <value>Top center</value>
   </data>
   <data name="VideoConference_OverlayPosition_TopLeftCorner.Content" xml:space="preserve">
     <value>Top left corner</value>
@@ -505,6 +505,9 @@ Disabling module or closing PowerToys will unmute microphone and camera</value>
   </data>
   <data name="VideoConference_OverlayPosition_BottomLeftCorner.Content" xml:space="preserve">
     <value>Bottom left corner</value>
+  </data>
+	<data name="VideoConference_OverlayPosition_BottomCenter.Content" xml:space="preserve">
+    <value>Bottom center</value>
   </data>
   <data name="VideoConference_OverlayPosition_BottomRightCorner.Content" xml:space="preserve">
     <value>Bottom right corner</value>

@@ -174,14 +174,19 @@ void Overlay::showOverlay(std::wstring position, std::wstring monitorString)
             positionX = monitorInfo.left() + BORDER_OFFSET;
             positionY = monitorInfo.top() + BORDER_OFFSET;
         }
-        else if (position == L"Center")
+        else if (position == L"Top center")
         {
             positionX = monitorInfo.middle().x - overlayWidth / 2;
-            positionY = monitorInfo.middle().y - overlayHeight / 2;
+            positionY = monitorInfo.top() + BORDER_OFFSET;
         }
         else if (position == L"Bottom left corner")
         {
             positionX = monitorInfo.left() + BORDER_OFFSET;
+            positionY = monitorInfo.bottom() - overlayHeight - BORDER_OFFSET;
+        }
+        else if (position == L"Bottom center")
+        {
+            positionX = monitorInfo.middle().x - overlayWidth / 2;
             positionY = monitorInfo.bottom() - overlayHeight - BORDER_OFFSET;
         }
         else if (position == L"Bottom right corner")

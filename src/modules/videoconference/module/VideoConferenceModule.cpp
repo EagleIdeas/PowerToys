@@ -269,6 +269,8 @@ void VideoConferenceModule::set_config(const wchar_t* config)
             {
                 Overlay::setHideOverlayWhenUnmuted(val.value());
             }
+
+            overlay.showOverlay(overlayPositionString, overlayMonitorString);
         }
     }
     catch (...)

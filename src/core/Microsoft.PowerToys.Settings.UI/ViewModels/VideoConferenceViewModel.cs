@@ -74,10 +74,10 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
 
             switch (overlayPosition)
             {
-                case "Center":
+                case "Top left corner":
                     _overlayPositionIndex = 0;
                     break;
-                case "Top left corner":
+                case "Top center":
                     _overlayPositionIndex = 1;
                     break;
                 case "Top right corner":
@@ -86,8 +86,11 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
                 case "Bottom left corner":
                     _overlayPositionIndex = 3;
                     break;
-                case "Bottom right corner":
+                case "Bottom center":
                     _overlayPositionIndex = 4;
+                    break;
+                case "Bottom right corner":
+                    _overlayPositionIndex = 5;
                     break;
             }
 
@@ -274,12 +277,12 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
                     switch (_overlayPositionIndex)
                     {
                         case 0:
-                            Settings.Properties.OverlayPosition.Value = "Center";
+                            Settings.Properties.OverlayPosition.Value = "Top left corner";
                             RaisePropertyChanged();
                             break;
 
                         case 1:
-                            Settings.Properties.OverlayPosition.Value = "Top left corner";
+                            Settings.Properties.OverlayPosition.Value = "Top center";
                             RaisePropertyChanged();
                             break;
 
@@ -294,6 +297,11 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
                             break;
 
                         case 4:
+                            Settings.Properties.OverlayPosition.Value = "Bottom center";
+                            RaisePropertyChanged();
+                            break;
+
+                        case 5:
                             Settings.Properties.OverlayPosition.Value = "Bottom right corner";
                             RaisePropertyChanged();
                             break;

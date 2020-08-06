@@ -103,16 +103,17 @@
                         Command="{Binding Mode=OneWay, Path=ClearOverlayImage}"
                         HorizontalAlignment="Left" />
             </StackPanel>
-            
+
             <ComboBox x:Uid="VideoConference_OverlayPosition" 
                       MinWidth="240"
                       Margin="{StaticResource MediumTopMargin}"
                       SelectedIndex="{ Binding Mode=TwoWay, Path=OverlayPostionIndex}"
                       IsEnabled="{ Binding Mode=TwoWay, Path=IsEnabled}">
-                <ComboBoxItem x:Uid="VideoConference_OverlayPosition_Center"/>
                 <ComboBoxItem x:Uid="VideoConference_OverlayPosition_TopLeftCorner"/>
+                <ComboBoxItem x:Uid="VideoConference_OverlayPosition_TopCenter"/>
                 <ComboBoxItem x:Uid="VideoConference_OverlayPosition_TopRightCorner"/>
                 <ComboBoxItem x:Uid="VideoConference_OverlayPosition_BottomLeftCorner"/>
+                <ComboBoxItem x:Uid="VideoConference_OverlayPosition_BottomCenter"/>
                 <ComboBoxItem x:Uid="VideoConference_OverlayPosition_BottomRightCorner"/>
             </ComboBox>
 
