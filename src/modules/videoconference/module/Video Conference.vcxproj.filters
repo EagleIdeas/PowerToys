@@ -43,78 +43,78 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="On-NotInUse Light.svg">
+    <None Include="Icons\On-Off Dark.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="On-Off Dark.svg">
+    <None Include="Icons\On-Off Light.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="On-Off Light.svg">
+    <None Include="Icons\On-On Dark.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="On-On Dark.svg">
+    <None Include="Icons\On-On Light.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="On-On Light.svg">
+    <None Include="Icons\Off-NotInUse Dark.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="Off-NotInUse Dark.svg">
+    <None Include="Icons\Off-NotInUse Light.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="Off-NotInUse Light.svg">
+    <None Include="Icons\Off-Off Dark.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="Off-Off Dark.svg">
+    <None Include="Icons\Off-Off Light.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="Off-Off Light.svg">
+    <None Include="Icons\Off-On Dark.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="Off-On Dark.svg">
+    <None Include="Icons\Off-On Light.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="Off-On Light.svg">
+    <None Include="Icons\On-NotInUse Dark.svg">
       <Filter>Assets</Filter>
     </None>
-    <None Include="On-NotInUse Dark.svg">
+    <None Include="Icons\On-NotInUse Light.svg">
       <Filter>Assets</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="On-NotInUse Light.png">
+    <Image Include="Icons\On-Off Light.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="On-Off Dark.png">
+    <Image Include="Icons\On-On Dark.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="On-Off Light.png">
+    <Image Include="Icons\On-On Light.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="On-On Dark.png">
+    <Image Include="Icons\Off-NotInUse Dark.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="On-On Light.png">
+    <Image Include="Icons\Off-NotInUse Light.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Off-NotInUse Dark.png">
+    <Image Include="Icons\Off-Off Dark.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Off-NotInUse Light.png">
+    <Image Include="Icons\Off-Off Light.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Off-Off Dark.png">
+    <Image Include="Icons\Off-On Dark.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Off-Off Light.png">
+    <Image Include="Icons\Off-On Light.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Off-On Dark.png">
+    <Image Include="Icons\On-NotInUse Dark.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="Off-On Light.png">
+    <Image Include="Icons\On-NotInUse Light.png">
       <Filter>Assets</Filter>
     </Image>
-    <Image Include="On-NotInUse Dark.png">
+    <Image Include="Icons\On-Off Dark.png">
       <Filter>Assets</Filter>
     </Image>
     <Image Include="black.bmp">

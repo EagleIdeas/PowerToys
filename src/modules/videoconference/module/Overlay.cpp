@@ -27,10 +27,10 @@ const int BORDER_OFFSET = 12;
 
 Overlay::Overlay()
 {
-    camOnMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/On-On Dark.png");
-    camOffMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/On-Off Dark.png");
-    camOnMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Off-On Dark.png");
-    camOffMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Off-Off Dark.png");
+    camOnMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-On Dark.png");
+    camOffMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-Off Dark.png");
+    camOnMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-On Dark.png");
+    camOffMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-Off Dark.png");
 }
 
 LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)

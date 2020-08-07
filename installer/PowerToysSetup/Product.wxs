@@ -288,7 +288,9 @@
             </Directory>
             <Directory Id="PowerRenameInstallFolder" Name="$(var.PowerRenameProjectName)"/>
             <Directory Id="ShortcutGuideInstallFolder" Name="$(var.ShortcutGuideProjectName)"/>
-            <Directory Id="VideoConferenceInstallFolder" Name="$(var.VideoConferenceProjectName)"/>
+            <Directory Id="VideoConferenceInstallFolder" Name="$(var.VideoConferenceProjectName)">
+		        <Directory Id="VideoConferenceIconsFolder" Name="Icons" />
+			</Directory>
             <Directory Id="FileExplorerPreviewInstallFolder" Name="FileExplorerPreview" />
             <Directory Id="FancyZonesInstallFolder" Name="$(var.FancyZonesProjectName)" />
             <Directory Id="KeyboardManagerInstallFolder" Name="$(var.KeyboardManagerProjectName)" />
@@ -634,18 +636,6 @@
     <DirectoryRef Id="VideoConferenceInstallFolder" FileSource="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\">
       <Component Id="Module_VideoConference" Guid="5996527a-40fc-432e-b3ac-abc0b4bd3887" Win64="yes">
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\VideoConferenceModule.dll" KeyPath="yes" /> 
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-NotInUse Dark.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-NotInUse Light.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-Off Dark.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-Off Light.png" />
-		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-On Dark.png" />
-		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Off-On Light.png" />
-		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-NotInUse Dark.png" />
-		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-NotInUse Light.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-Off Light.png" />
-		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-Off Dark.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-On Dark.png" />
-        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\On-On Light.png" />
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\black.bmp" />
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\VideoConferenceVirtualDriver\videoconferencevirtualdriver.cat" />
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\VideoConferenceVirtualDriver\VideoConferenceCustomMediaSource.dll" />
@@ -654,6 +644,26 @@
         <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\VideoConferenceVirtualDriver.cer" />
       </Component>
     </DirectoryRef>
+	  
+	<DirectoryRef Id="VideoConferenceIconsFolder" FileSource="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons">
+      <Component Id="Module_VideoConferenceIcons" Guid="5996527a-40fc-432e-b34c-abc0b4bd3887" Win64="yes">
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\Off-NotInUse Dark.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\Off-NotInUse Light.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\Off-Off Dark.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\Off-Off Light.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\Off-On Dark.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\Off-On Light.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\On-NotInUse Dark.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\On-NotInUse Light.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\On-Off Light.png" />
+		<File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\On-Off Dark.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\On-On Dark.png" />
+        <File Source="$(var.BinX64Dir)modules\$(var.VideoConferenceProjectName)\Icons\On-On Light.png" />
+
+      </Component>
+    </DirectoryRef>
+	  
+	  
 
     <DirectoryRef Id="KeyboardManagerInstallFolder" FileSource="$(var.BinX64Dir)modules\$(var.KeyboardManagerProjectName)\">
       <Component Id="Module_KeyboardManager" Guid="9279BD82-786F-4F0B-8E49-DB484EE34C9B" Win64="yes">
@@ -828,6 +838,7 @@
       <ComponentRef Id="PowerToysSvgs" />
       <ComponentRef Id="Module_ShortcutGuide" />
       <ComponentRef Id="Module_VideoConference" />
+      <ComponentRef Id="Module_VideoConferenceIcons" />
       <ComponentRef Id="Module_FancyZones" />
       <ComponentRef Id="DesktopShortcut" />
       <ComponentRef Id="Module_PowerRename" />
