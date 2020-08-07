@@ -43,6 +43,8 @@ namespace Microsoft.PowerToys.Settings.UI.Lib
                 Code = 79,
             });
 
+            Theme = new StringProperty("light");
+
             this.HideOverlayWhenUnmuted = new BoolProperty(true);
         }
 
@@ -66,6 +68,9 @@ namespace Microsoft.PowerToys.Settings.UI.Lib
 
         [JsonPropertyName("camera_overlay_image_path")]
         public StringProperty CameraOverlayImagePath { get; set; } = string.Empty;
+
+        [JsonPropertyName("theme")]
+        public StringProperty Theme { get; set; }
 
         [JsonPropertyName("hide_overlay_when_unmuted")]
         public BoolProperty HideOverlayWhenUnmuted { get; set; }

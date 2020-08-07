@@ -3,16 +3,19 @@
 
 #include <windowsx.h>
 
+#include "common/windows_colors.h"
+
 #include "VideoConferenceModule.h"
 
-Gdiplus::Image* Overlay::camOnMicOnBitmap = nullptr;
-Gdiplus::Image* Overlay::camOffMicOnBitmap = nullptr;
-Gdiplus::Image* Overlay::camOnMicOffBitmap = nullptr;
-Gdiplus::Image* Overlay::camOffMicOffBitmap = nullptr;
+OverlayImages Overlay::darkImages;
+OverlayImages Overlay::lightImages;
 
 bool Overlay::valueUpdated = false;
 bool Overlay::cameraMuted = false;
 bool Overlay::microphoneMuted = false;
+
+std::wstring Overlay::theme = L"system";
+
 bool Overlay::hideOverlayWhenUnmuted = true;
 
 std::vector<HWND> Overlay::hwnds;
@@ -27,10 +30,15 @@ const int BORDER_OFFSET = 12;
 
 Overlay::Overlay()
 {
-    camOnMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-On Dark.png");
-    camOffMicOnBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-Off Dark.png");
-    camOnMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-On Dark.png");
-    camOffMicOffBitmap = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-Off Dark.png");
+    darkImages.camOnMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-On Dark.png");
+    darkImages.camOffMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-Off Dark.png");
+    darkImages.camOnMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-On Dark.png");
+    darkImages.camOffMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-Off Dark.png");
+
+    lightImages.camOnMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-On Light.png");
+    lightImages.camOffMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-Off Light.png");
+    lightImages.camOnMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-On Light.png");
+    lightImages.camOffMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-Off Light.png");
 }
 
 LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -66,26 +74,37 @@ LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARA
 
         Gdiplus::Graphics graphic(hdc);
 
+        OverlayImages* themeImages = &darkImages;
+
+        if (theme == L"light" || (theme == L"system" && !WindowsColors::is_dark_mode()))
+        {
+            themeImages = &lightImages;
+        }
+        else
+        {
+            themeImages = &darkImages;
+        }
+
         if (microphoneMuted)
         {
             if (cameraMuted)
             {
-                graphic.DrawImage(camOffMicOffBitmap, 0, 0, camOffMicOffBitmap->GetWidth(), camOffMicOffBitmap->GetHeight());
+                graphic.DrawImage(themeImages->camOffMicOff, 0, 0, themeImages->camOffMicOff->GetWidth(), themeImages->camOffMicOff->GetHeight());
             }
             else
             {
-                graphic.DrawImage(camOnMicOffBitmap, 0, 0, camOnMicOffBitmap->GetWidth(), camOnMicOffBitmap->GetHeight());
+                graphic.DrawImage(themeImages->camOnMicOff, 0, 0, themeImages->camOnMicOff->GetWidth(), themeImages->camOnMicOff->GetHeight());
             }
         }
         else
         {
             if (cameraMuted)
             {
-                graphic.DrawImage(camOffMicOnBitmap, 0, 0, camOffMicOnBitmap->GetWidth(), camOffMicOnBitmap->GetHeight());
+                graphic.DrawImage(themeImages->camOffMicOn, 0, 0, themeImages->camOffMicOn->GetWidth(), themeImages->camOffMicOn->GetHeight());
             }
             else
             {
-                graphic.DrawImage(camOnMicOnBitmap, 0, 0, camOnMicOnBitmap->GetWidth(), camOnMicOnBitmap->GetHeight());
+                graphic.DrawImage(themeImages->camOnMicOn, 0, 0, themeImages->camOnMicOn->GetWidth(), themeImages->camOnMicOn->GetHeight());
             }
         }
 
@@ -96,7 +115,7 @@ LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARA
     {
         InvalidateRect(hwnd, NULL, NULL);
         using namespace std::chrono;
-        
+
         if (cameraMuted || microphoneMuted || !hideOverlayWhenUnmuted)
         {
             ShowWindow(hwnd, SW_SHOW);
@@ -135,8 +154,8 @@ void Overlay::showOverlay(std::wstring position, std::wstring monitorString)
     }
     hwnds.clear();
 
-    int overlayWidth = camOffMicOffBitmap->GetWidth();
-    int overlayHeight = camOffMicOffBitmap->GetHeight();
+    int overlayWidth = darkImages.camOffMicOff->GetWidth();
+    int overlayHeight = darkImages.camOffMicOff->GetHeight();
 
     // Register the window class
     LPCWSTR CLASS_NAME = L"MuteNotificationWindowClass";
@@ -153,7 +172,6 @@ void Overlay::showOverlay(std::wstring position, std::wstring monitorString)
     DWORD dwStyle = WS_POPUPWINDOW;
 
     std::vector<MonitorInfo> monitorInfos;
-
 
     if (monitorString == L"All monitors")
     {
@@ -267,4 +285,9 @@ void Overlay::setMicrophoneMute(bool mute)
 void Overlay::setHideOverlayWhenUnmuted(bool hide)
 {
     hideOverlayWhenUnmuted = hide;
+}
+
+void Overlay::setTheme(std::wstring theme)
+{
+    Overlay::theme = theme;
 }

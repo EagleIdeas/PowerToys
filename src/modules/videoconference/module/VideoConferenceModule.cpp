@@ -265,6 +265,10 @@ void VideoConferenceModule::set_config(const wchar_t* config)
                 imageOverlayPath = val.value();
                 sendOverlayImageUpdate();
             }
+            if (const auto val = values.get_string_value(L"theme"))
+            {
+                Overlay::setTheme(val.value());
+            }
             if (const auto val = values.get_bool_value(L"hide_overlay_when_unmuted"))
             {
                 Overlay::setHideOverlayWhenUnmuted(val.value());
@@ -312,6 +316,10 @@ void VideoConferenceModule::init_settings()
         if (const auto val = settings.get_string_value(L"camera_overlay_image_path"))
         {
             imageOverlayPath = val.value();
+        }
+        if (const auto val = settings.get_string_value(L"theme"))
+        {
+            Overlay::setTheme(val.value());
         }
         if (const auto val = settings.get_bool_value(L"hide_overlay_when_unmuted"))
         {

@@ -5,6 +5,14 @@
 
 #include "common/monitors.h"
 
+struct OverlayImages
+{
+    Gdiplus::Image* camOnMicOn = nullptr;
+    Gdiplus::Image* camOffMicOn = nullptr;
+    Gdiplus::Image* camOnMicOff = nullptr;
+    Gdiplus::Image* camOffMicOff = nullptr;
+};
+
 class Overlay
 {
 public:
@@ -18,6 +26,7 @@ public:
     bool static getMicrophoneMute();
     void static setMicrophoneMute(bool mute);
 
+    void static setTheme(std::wstring theme);
     void static setHideOverlayWhenUnmuted(bool hide);
 
 private:
@@ -26,14 +35,14 @@ private:
     // Window callback can't be non-static so this members can't as well
     static std::vector<HWND> hwnds;
 
-    static Gdiplus::Image* camOnMicOnBitmap;
-    static Gdiplus::Image* camOffMicOnBitmap;
-    static Gdiplus::Image* camOnMicOffBitmap;
-    static Gdiplus::Image* camOffMicOffBitmap;
+    static OverlayImages darkImages;
+    static OverlayImages lightImages;
 
     static bool valueUpdated;
     static bool cameraMuted;
     static bool microphoneMuted;
+
+    static std::wstring theme;
 
     static bool hideOverlayWhenUnmuted;
 

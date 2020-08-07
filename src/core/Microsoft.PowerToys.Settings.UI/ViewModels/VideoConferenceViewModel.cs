@@ -72,9 +72,7 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
 
             this._hideOverlayWhenUnmuted = Settings.Properties.HideOverlayWhenUnmuted.Value;
 
-            string overlayPosition = Settings.Properties.OverlayPosition.Value;
-
-            switch (overlayPosition)
+            switch (Settings.Properties.OverlayPosition.Value)
             {
                 case "Top left corner":
                     _overlayPositionIndex = 0;
@@ -96,8 +94,7 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
                     break;
             }
 
-            string overlayMonitor = Settings.Properties.OverlayMonitor.Value;
-            switch (overlayMonitor)
+            switch (Settings.Properties.OverlayMonitor.Value)
             {
                 case "Main monitor":
                     _overlayMonitorIndex = 0;
@@ -166,7 +163,6 @@ namespace Microsoft.PowerToys.Settings.UI.ViewModels
             {
             }
         }
-
 
         public int SelectedCameraIndex
         {
