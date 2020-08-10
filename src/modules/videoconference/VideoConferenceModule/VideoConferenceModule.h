@@ -44,6 +44,7 @@ public:
     static bool getMicrophoneMuteState();
     static void reverseVirtualCameraMuteState();
     static bool getVirtualCameraMuteState();
+    static bool getVirtualCameraInUse();
 
 private:
     void init_settings();

@@ -11,6 +11,8 @@ struct OverlayImages
     Gdiplus::Image* camOffMicOn = nullptr;
     Gdiplus::Image* camOnMicOff = nullptr;
     Gdiplus::Image* camOffMicOff = nullptr;
+    Gdiplus::Image* camUnusedMicOn = nullptr;
+    Gdiplus::Image* camUnusedMicOff = nullptr;
 };
 
 class Overlay
@@ -40,6 +42,7 @@ private:
 
     static bool valueUpdated;
     static bool cameraMuted;
+    static bool cameraInUse;
     static bool microphoneMuted;
 
     static std::wstring theme;

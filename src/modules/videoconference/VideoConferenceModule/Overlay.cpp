@@ -12,6 +12,7 @@ OverlayImages Overlay::lightImages;
 
 bool Overlay::valueUpdated = false;
 bool Overlay::cameraMuted = false;
+bool Overlay::cameraInUse = false;
 bool Overlay::microphoneMuted = false;
 
 std::wstring Overlay::theme = L"system";
@@ -34,11 +35,15 @@ Overlay::Overlay()
     darkImages.camOffMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-Off Dark.png");
     darkImages.camOnMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-On Dark.png");
     darkImages.camOffMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-Off Dark.png");
+    darkImages.camUnusedMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-NotInUse Dark.png");
+    darkImages.camUnusedMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-NotInUse Dark.png");
 
     lightImages.camOnMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-On Light.png");
     lightImages.camOffMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-Off Light.png");
     lightImages.camOnMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-On Light.png");
     lightImages.camOffMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-Off Light.png");
+    lightImages.camUnusedMicOn = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/On-NotInUse Light.png");
+    lightImages.camUnusedMicOff = Gdiplus::Image::FromFile(L"modules/VideoConference/Icons/Off-NotInUse Light.png");
 }
 
 LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
@@ -85,7 +90,18 @@ LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARA
             themeImages = &darkImages;
         }
 
-        if (microphoneMuted)
+        if (!cameraInUse)
+        {
+            if (microphoneMuted)
+            {
+                graphic.DrawImage(themeImages->camUnusedMicOff, 0, 0, themeImages->camUnusedMicOff->GetWidth(), themeImages->camUnusedMicOff->GetHeight());
+            }
+            else
+            {
+                graphic.DrawImage(themeImages->camUnusedMicOn, 0, 0, themeImages->camUnusedMicOn->GetWidth(), themeImages->camUnusedMicOn->GetHeight());
+            }
+        }
+        else if (microphoneMuted )
         {
             if (cameraMuted)
             {
@@ -113,10 +129,12 @@ LRESULT Overlay::WindowProcessMessages(HWND hwnd, UINT msg, WPARAM wparam, LPARA
     }
     case WM_TIMER:
     {
+        cameraInUse = VideoConferenceModule::getVirtualCameraInUse();
+
         InvalidateRect(hwnd, NULL, NULL);
         using namespace std::chrono;
 
-        if (cameraMuted || microphoneMuted || !hideOverlayWhenUnmuted)
+        if (cameraInUse || microphoneMuted || !hideOverlayWhenUnmuted)
         {
             ShowWindow(hwnd, SW_SHOW);
         }

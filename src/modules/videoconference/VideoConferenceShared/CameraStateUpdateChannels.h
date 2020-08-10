@@ -7,6 +7,7 @@
 struct CameraSettingsUpdateChannel
 {
     bool useOverlayImage = false;
+    bool cameraInUse = false;
 
     std::optional<size_t> overlayImageSize;
     std::optional<std::array<wchar_t, 256>> sourceCameraName;

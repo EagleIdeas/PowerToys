@@ -144,6 +144,20 @@ bool VideoConferenceModule::getVirtualCameraMuteState()
     return disabled;
 }
 
+bool VideoConferenceModule::getVirtualCameraInUse()
+{
+    bool inUse = false;
+    if (!instance->_settingsUpdateChannel.has_value())
+    {
+        return inUse;
+    }
+    instance->_settingsUpdateChannel->access([&inUse](auto settingsMemory) {
+        auto settings = reinterpret_cast<CameraSettingsUpdateChannel*>(settingsMemory.data());
+        inUse = settings->cameraInUse;
+    });
+    return inUse;
+}
+
 LRESULT CALLBACK VideoConferenceModule::LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
     if (nCode == HC_ACTION)

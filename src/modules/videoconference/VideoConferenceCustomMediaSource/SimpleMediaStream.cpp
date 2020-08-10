@@ -556,6 +556,16 @@ SimpleMediaStream::Shutdown()
     LogToFile(__FUNCTION__);
 
     HRESULT hr = S_OK;
+
+    if (_settingsUpdateChannel.has_value())
+    {
+        _settingsUpdateChannel->access([this](auto settingsMemory) {
+            auto settings = reinterpret_cast<CameraSettingsUpdateChannel*>(settingsMemory.data());
+
+            settings->cameraInUse = false;
+
+        });
+    }
     auto lock = _critSec.Lock();
 
     _isShutdown = true;
@@ -679,6 +689,9 @@ SimpleMediaStream::SyncedSettings SimpleMediaStream::SyncCurrentSettings()
         auto settings = reinterpret_cast<CameraSettingsUpdateChannel*>(settingsMemory.data());
         bool cameraNameUpdated = false;
         result.webcamDisabled = settings->useOverlayImage;
+
+        settings->cameraInUse = true;
+
         if (settings->sourceCameraName.has_value())
         {
             std::wstring_view newCameraNameView{ settings->sourceCameraName->data() };
